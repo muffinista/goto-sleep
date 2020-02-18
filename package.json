@@ -12,7 +12,7 @@
     "build": "node-gyp build",
     "rebuild": "node-gyp configure && node-gyp build",
     "test": "rimraf build && npm run rebuild && node ./test.js",
-    "install": "node scripts/install_dependencies.js"
+    "install": "node scripts/install_dependencies.js && npm run rebuild"
   },
   "devDependencies": {
     "node-gyp": "^6.1.0",
