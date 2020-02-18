@@ -89,7 +89,15 @@ NAN_METHOD(gotoSleep) {
   #endif
 
   #ifdef IS_WINDOWS
-  SendMessage(handle, WM_SYSCOMMAND, SC_MONITORPOWER, 2);
+  // Get the foreground window which the user is currently working on.
+  HWND wnd = ::GetForegroundWindow();
+  if (!wnd) {
+    info.GetReturnValue().Set(true);
+  }
+  else {
+    SendMessage(wnd, WM_SYSCOMMAND, SC_MONITORPOWER, 2);
+  }
+
   info.GetReturnValue().Set(true);
   #endif
 }
