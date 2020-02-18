@@ -5,8 +5,6 @@
 #include <mach/mach_port.h>
 #include <IOKit/pwr_mgt/IOPM.h>
 #include <IOKit/pwr_mgt/IOPMLib.h>
-// #include <Carbon/Carbon.h>
-// #include <AppKit/AppKit.h>
 #endif
 
 #ifdef IS_WINDOWS
@@ -14,6 +12,7 @@
 #endif
 
 NAN_METHOD(gotoSleep);
+NAN_METHOD(lockSystem);
 
 // Example with node ObjectWrap
 // Based on https://nodejs.org/api/addons.html#addons_wrapping_c_objects but using NAN
@@ -62,50 +61,69 @@ NAN_METHOD(GotoSleep::New) {
 
 using v8::FunctionTemplate;
 
-
-NAN_METHOD(gotoSleep) {
-  #ifdef IS_MAC
+#ifdef IS_MAC
+bool doSleep() {
   IOReturn                        err;
   io_connect_t                    fb;
 
   // https://opensource.apple.com/source/PowerManagement/PowerManagement-211.14/pmset/pmset.c.auto.html
   fb = IOPMFindPowerManagement(MACH_PORT_NULL);
   if ( MACH_PORT_NULL != fb ) {
-    err = IOPMSleepSystem ( fb );
+    err = IOPMSleepSystem( fb );
 
     if (kIOReturnNotPrivileged == err) {
       // printf("Sleep error 0x%08x; You must run this as root.\n", err);
-      info.GetReturnValue().Set(false);
+      return false;
     }
     else if ( (MACH_PORT_NULL == fb) || (kIOReturnSuccess != err) ) {
       // printf("Unable to sleep system: error 0x%08x\n", err);
-      info.GetReturnValue().Set(false);
+      return false;
     } 
-    else {
-      // printf("Sleeping now...\n");
-      info.GetReturnValue().Set(true);
-    }
+    return true;
   }  
+
+  return false;
+}
+#endif
+
+NAN_METHOD(gotoSleep) {
+  #ifdef IS_MAC
+  bool result = doSleep();
+  info.GetReturnValue().Set(result);
   #endif
 
   #ifdef IS_WINDOWS
   // Get the foreground window which the user is currently working on.
   HWND wnd = ::GetForegroundWindow();
   if (!wnd) {
-    info.GetReturnValue().Set(true);
+    info.GetReturnValue().Set(false);
   }
   else {
     SendMessage(wnd, WM_SYSCOMMAND, SC_MONITORPOWER, 2);
+    info.GetReturnValue().Set(true);
   }
+  #endif
+}
+
+NAN_METHOD(lockSystem) {
+  #ifdef IS_MAC
+  bool result = doSleep();
+  info.GetReturnValue().Set(result);
+  #endif
+
+  #ifdef IS_WINDOWS
+  LockWorkStation();
 
   info.GetReturnValue().Set(true);
   #endif
 }
 
-
 NAN_MODULE_INIT(InitAll) {
   Nan::Set(target, Nan::New("gotoSleep").ToLocalChecked(),
     Nan::GetFunction(Nan::New<FunctionTemplate>(gotoSleep)).ToLocalChecked());
+
+  Nan::Set(target, Nan::New("lockSystem").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(lockSystem)).ToLocalChecked());
 
   // Passing target down to the next NAN_MODULE_INIT
   GotoSleep::Init(target);
