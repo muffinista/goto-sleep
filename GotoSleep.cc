@@ -12,7 +12,7 @@
 #endif
 
 NAN_METHOD(gotoSleep);
-NAN_METHOD(lockSystem);
+NAN_METHOD(lockScreen);
 
 // Example with node ObjectWrap
 // Based on https://nodejs.org/api/addons.html#addons_wrapping_c_objects but using NAN
@@ -105,7 +105,7 @@ NAN_METHOD(gotoSleep) {
   #endif
 }
 
-NAN_METHOD(lockSystem) {
+NAN_METHOD(lockScreen) {
   #ifdef IS_MAC
   bool result = doSleep();
   info.GetReturnValue().Set(result);
@@ -122,8 +122,8 @@ NAN_MODULE_INIT(InitAll) {
   Nan::Set(target, Nan::New("gotoSleep").ToLocalChecked(),
     Nan::GetFunction(Nan::New<FunctionTemplate>(gotoSleep)).ToLocalChecked());
 
-  Nan::Set(target, Nan::New("lockSystem").ToLocalChecked(),
-    Nan::GetFunction(Nan::New<FunctionTemplate>(lockSystem)).ToLocalChecked());
+  Nan::Set(target, Nan::New("lockScreen").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(lockScreen)).ToLocalChecked());
 
   // Passing target down to the next NAN_MODULE_INIT
   GotoSleep::Init(target);

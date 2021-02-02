@@ -1,15 +1,22 @@
 let GotoSleep;
-const useBindings = (process.platform === 'darwin' || process.platform === 'win32');
 
-if ( useBindings ) {
+const exec = require('child_process').exec; 
+const runCommand = function(str) {
+  return exec(str).stderr.pipe(process.stderr);
+};
+
+if ( process.platform == 'win32' ) {
   GotoSleep = require('bindings')('GotoSleep');
+}
+else if ( process.platform === 'darwin' ) {
+  GotoSleep = require('bindings')('GotoSleep');
+  // hack screen locking for OSX
+  GotoSleep.lockScreen = function() {
+    runCommand('/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend');
+  }
 }
 else {
   const which = require('which');
-  const exec = require('child_process').exec; 
-  const runCommand = function(str) {
-    return exec(str).stderr.pipe(process.stderr);
-  };
   const handler = function() {
     if ( which.sync("xdg-screensaver", { nothrow: true }) ) {
       runCommand("xdg-screensaver lock");
