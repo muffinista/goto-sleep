@@ -5,6 +5,9 @@
 #include <mach/mach_port.h>
 #include <IOKit/pwr_mgt/IOPM.h>
 #include <IOKit/pwr_mgt/IOPMLib.h>
+extern "C" {
+  int SACLockScreenImmediate ( void );
+}
 #endif
 
 #ifdef IS_WINDOWS
@@ -107,7 +110,7 @@ NAN_METHOD(gotoSleep) {
 
 NAN_METHOD(lockScreen) {
   #ifdef IS_MAC
-  bool result = doSleep();
+  bool result = SACLockScreenImmediate();
   info.GetReturnValue().Set(result);
   #endif
 

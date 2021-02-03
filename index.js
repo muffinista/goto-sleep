@@ -5,16 +5,16 @@ const runCommand = function(str) {
   return exec(str).stderr.pipe(process.stderr);
 };
 
-if ( process.platform == 'win32' ) {
+if ( process.platform == 'win32' || process.platform === 'darwin' ) {
   GotoSleep = require('bindings')('GotoSleep');
 }
-else if ( process.platform === 'darwin' ) {
-  GotoSleep = require('bindings')('GotoSleep');
-  // hack screen locking for OSX
-  GotoSleep.lockScreen = function() {
-    runCommand('/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend');
-  }
-}
+// else if ( process.platform === 'darwin' ) {
+//   GotoSleep = require('bindings')('GotoSleep');
+//   // hack screen locking for OSX
+//   GotoSleep.lockScreen = function() {
+//     runCommand('/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend');
+//   }
+// }
 else {
   const which = require('which');
   const handler = function() {

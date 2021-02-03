@@ -23,6 +23,7 @@
             'libraries': [
               '-framework Carbon',
               '-framework AppKit',
+              '/System/Library/PrivateFrameworks/login.framework/Versions/Current/login'
             ]
           },
           'xcode_settings': {
