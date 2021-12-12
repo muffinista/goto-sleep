@@ -16,19 +16,10 @@
       'conditions': [
         ['OS == "mac"', {
           'defines': ['IS_MAC'],
-          'include_dirs': [
-            'System/Library/Frameworks/Carbon.Framework/Headers'
-          ],
           'link_settings': {
             'libraries': [
-              '-framework Carbon',
-              '-framework AppKit',
-              '/System/Library/PrivateFrameworks/login.framework/Versions/Current/login'
-            ]
-          },
-          'xcode_settings': {
-            'OTHER_CFLAGS': [
-                '-ObjC++'
+            '-framework login',
+            '-F /System/Library/PrivateFrameworks'
             ]
           }
         }],
