@@ -6,16 +6,8 @@ const runCommand = function(str) {
 };
 
 if ( process.platform == 'win32' || process.platform === 'darwin' ) {
-  GotoSleep = require('bindings')('GotoSleep');
-}
-// else if ( process.platform === 'darwin' ) {
-//   GotoSleep = require('bindings')('GotoSleep');
-//   // hack screen locking for OSX
-//   GotoSleep.lockScreen = function() {
-//     runCommand('/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend');
-//   }
-// }
-else {
+  GotoSleep = require('./build/Release/GotoSleep');
+} else {
   const which = require('which');
   const handler = function() {
     if ( which.sync("xdg-screensaver", { nothrow: true }) ) {
