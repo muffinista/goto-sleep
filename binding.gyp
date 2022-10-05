@@ -2,10 +2,7 @@
   "targets": [
     {
       "target_name": "GotoSleep",
-      "sources": [ "GotoSleep.cc" ],
-      "include_dirs": [
-        "<!(node -e \"require('nan')\")"
-      ],
+      "sources": [ "src/GotoSleep.cc" ],
       'cflags': [
         '-Wall',
         '-Wparentheses',
@@ -19,20 +16,13 @@
       ],
       'conditions': [
         ['OS == "mac"', {
-          'defines': ['IS_MAC'],
-          'include_dirs': [
-            'System/Library/Frameworks/Carbon.Framework/Headers'
+          'sources': [
+            'src/mac/gotosleep.mm'
           ],
           'link_settings': {
             'libraries': [
-              '-framework Carbon',
-              '-framework AppKit',
-              '/System/Library/PrivateFrameworks/login.framework/Versions/Current/login'
-            ]
-          },
-          'xcode_settings': {
-            'OTHER_CFLAGS': [
-                '-ObjC++'
+              '-F /System/Library/PrivateFrameworks',
+              '-framework login'
             ]
           }
         }],
@@ -40,7 +30,10 @@
           'defines': ['IS_WINDOWS'],
           'msvs_settings': {
             'VCCLCompilerTool': { "ExceptionHandling": 1, 'AdditionalOptions': [ '-std:c++17' ] }
-          }
+          },
+          'sources': [
+            'src/win/gotosleep.cc'
+          ]
         }]
       ]
     }

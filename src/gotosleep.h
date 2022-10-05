@@ -1,0 +1,2 @@
+bool doSleep();
+bool doLockScreen();
