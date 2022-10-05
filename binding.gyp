@@ -11,7 +11,11 @@
         '-Wparentheses',
         '-Winline',
         '-Wbad-function-cast',
-        '-Wdisabled-optimization'
+        '-Wdisabled-optimization',
+        '-std=c++17'
+      ],
+      'cflags_cc': [
+        '-std=c++17'
       ],
       'conditions': [
         ['OS == "mac"', {
@@ -33,7 +37,10 @@
           }
         }],
         ["OS=='win'", {
-          'defines': ['IS_WINDOWS']
+          'defines': ['IS_WINDOWS'],
+          'msvs_settings': {
+            'VCCLCompilerTool': { "ExceptionHandling": 1, 'AdditionalOptions': [ '-std:c++17' ] }
+          }
         }]
       ]
     }
