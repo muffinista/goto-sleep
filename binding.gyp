@@ -24,6 +24,11 @@
               '-F /System/Library/PrivateFrameworks',
               '-framework login'
             ]
+          },
+          'xcode_settings': {
+            'OTHER_CFLAGS': [
+              '-std=c++20'
+            ]
           }
         }],
         ["OS=='win'", {
